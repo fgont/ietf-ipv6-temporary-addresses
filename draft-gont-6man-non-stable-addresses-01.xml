@@ -42,19 +42,6 @@ Recommendation on Temporary IPv6 Interface Identifiers</title>
     </author>
 
 
-    <author initials="W." surname="Liu" fullname="Will Liu">
-      <organization>Huawei Technologies</organization>
-      <address>
-        <postal>
-          <street>Bantian, Longgang District</street>
-          <city>Shenzhen</city>
-          <code>518129</code>
-          <country>P.R. China</country>
-        </postal>
-        <email>liushucheng@huawei.com</email>
-      </address>
-    </author>
-
  <author fullname="Christian Huitema" initials="C." surname="Huitema">
     <organization>Private Octopus Inc.</organization>
     <address>
@@ -70,13 +57,57 @@ Recommendation on Temporary IPv6 Interface Identifiers</title>
     </address>
   </author>
 
+    <author fullname="Guillermo Gont" initials="G.G." surname="Gont">
+      <!-- abbrev not needed but can be used for the header
+         if the full organization name is too long -->
+
+      <organization abbrev="SI6 Networks">SI6 Networks</organization>
+
+      <address>
+        <postal>
+          <!-- I've omitted my street address here -->
+
+          <street>Evaristo Carriego 2644</street>
+
+          <code>1706</code>
+
+          <city>Haedo</city>
+
+          <region>Provincia de Buenos Aires</region>
+
+          <country>Argentina</country>
+        </postal>
+
+        <phone>+54 11 4650 8472</phone>
+
+        <email>ggont@si6networks.com</email>
+
+        <uri>https://www.si6networks.com</uri>
+      </address>
+    </author>	
+
+    <author fullname="Madeleine Garcia Corbo" initials="M." surname="Garcia Corbo">
+      <organization abbrev="SITRANS">Servicios de Informacion del Transporte</organization>
+
+      <address>
+        <postal>
+          <street>Neptuno 358</street>
+          <code>10400</code>
+          <city>Havana City</city>
+          <country>Cuba</country>
+        </postal>
+
+        <email>madelen.garcia16@gmail.com</email>
+      </address>
+    </author>
+
 
 <date/>
 <area>Internet</area>
 <workgroup>IPv6 maintenance Working Group (6man)</workgroup>
     <abstract>
     <t>
-This document clarifies the stability requirements for IP6 addresses, and provides recommendations regarding the generation of Temporary addresses. Finally, it formally updates RFC4941 such that nodes are allowed to configure only temporary addresses.
+This document clarifies the stability requirements for IPv6 addresses, and provides recommendations regarding the generation of Temporary addresses. Finally, it formally updates RFC4941 such that nodes are allowed to configure only temporary addresses.
     </t>
     </abstract>
   </front>
@@ -112,7 +143,7 @@ address (e.g., a temporary address).</t>
 
 <t>This document clarifies the requirements for stability of IPv6 addresses, such 
 that nodes are not required to configure stable addresses. It also specifies a set 
-of requirements for the generation of Temporary addresses. Finally, it formally 
+of requirements for the generation of Temporary addresses, and also specifies some sample algorithms that may be employed to generate temporary addresses that comply with the aforementioned requirements. Finally, it formally 
 updates <xref target="RFC4941"/> such that temporary addresses can be employed 
 without the need to configure a stable address along side.
 </t>
@@ -133,20 +164,20 @@ without the need to configure a stable address along side.
 <section title="Problem statement" >
 <t>
 When <xref target="RFC4941"/> was written, its authors wanted to prevent privacy and security
-attacks enabled by the inclusions in addresses of "an embedded interface identifier, which remains
-constant over time." They observed that "Anytime a fixed identifier is used in multiple
+attacks enabled by addresses that contain "an embedded interface identifier, which remains
+constant over time". They observed that "Anytime a fixed identifier is used in multiple
 contexts, it becomes possible to correlate seemingly unrelated activity using this identifier." 
 They were concerned with both on-path attackers who would observe the IP addresses of
 packets observed in transit, and attackers that would have access to the logs of servers.
 </t>
 <t>
 Since the publication of <xref target="RFC4941"/> in September 2007, our understanding of threats
-and mitigations has evolved. We are now concerned with Pervasive Monitoring 
+and mitigations has evolved. The IETF is now officially concerned with Pervasive Monitoring 
 <xref target="RFC7258" />, as well as the wide spread collection of information for
 advertising and other purposes, for example through the Real Time Bidding protocol used for 
 advertising auctions <xref target="RTB25" />.
 </t>
-<section title="Privacy requirements" >
+<section title="Privacy requirements" anchor="privacy-reqs">
 <t>
 The widespread deployment of encryption advocated in <xref target="RFC7624" /> is a 
 response to Pervasive Monitoring. Encryption of communication reduces the amount of
@@ -160,7 +191,7 @@ is another response to pervasive monitoring. In conjunction with
 DHCP Anonymity <xref target="RFC7844" />, it ensures that devices cannot be tracked by their
 MAC Address or their DHCP identifiers when they connect to "hot spots". However, the privacy
 effects of MAC Address Randomization would be nullified if a device kept using the
-same IPv6 address before and after a randomization event.
+same IPv6 address before and after a MAC-address randomization event.
 </t>
 <t>
 Many Web Browsers have options enabling browsing "in private". However,
@@ -184,7 +215,7 @@ performing MAC Address Randomization, or changing the privacy posture of a node.
 <section title="Stability Requirements for IPv6 Addresses" anchor="iid-generation">
 <t>Nodes are not required to generate addresses with any specific stability properties. 
 That is, the generation of stable addresses is OPTIONAL. This means that a node may end 
-up configuring only stable addresses, only Temporary, or both stable and non-stable addresses.
+up configuring only stable addresses, only Temporary, or both stable and temporary addresses.
 </t>
 </section>
 
@@ -192,12 +223,14 @@ up configuring only stable addresses, only Temporary, or both stable and non-sta
 <section title="Requirements for Temporary IPv6 Addresses" anchor="non-iid-generation">
 <t>The requirements for temporary IPv6 addresses are as follows:
 <list style="numbers">
+<t>Temporary addresses MUST have a limited lifetime, which should be different for different addresses. The lifetime of an address essentially limits the extent to which network activity correlation can be performed based on such address.</t>
+<t>The lifetime of an address MUST be further reduced when privacy-meaningful events (such as a node attaching to a new network) takes place.</t>
 <t>The resulting Interface Identifiers MUST be different when addresses are configured 
    for different prefixes.  That is, if different
    autoconfiguration prefixes are used to configure addresses for the same
    network interface card, the resulting Interface Identifiers must be
-   (statistically) different.  This means that, given two addresses, it must
-   be difficult for an outside entity to tell whether the addresses have been
+   (statistically) different.  This means that, given two addresses that employ different prefixes, it must
+   be difficult for an outside entity to tell whether the addresses correspond to the same network interface or even whether they have been
    generated by the same host.
 </t>
 
@@ -211,11 +244,15 @@ addresses).</t>
    of the Interface Identifiers generated for configuring other addresses.
 </t>
 
-<t>The resulting Interface Identifiers must be semantically opaque and must not 
+<t>The resulting Interface Identifiers MUST be semantically opaque <xref target="RFC7136"/> and MUST NOT 
 follow any specific patterns.</t>
 
-</list>
+</list> 
 </t>
+
+<t>By definition, temporary addresses have a limited lifetime. This is in contrast with e.g. stable addresses <xref target="RFC7217"/>, that do not have have a limited lifetime. Having a variable maximum lifetime prevents an observer from synchronizing with the temporary address regeneration; that is, from being able to expect when address will be regenerated, and thus infer that one newly observed addresses is the result of regenerating a previously observed one.</t>
+
+<t>The lifetime of an address should be further reduced by privacy-meaningful events. For example, a host should not employ the same address across network attachment events. That is, a host that de-attaches from a network and subsequently re-attaches to a (possibly different) network should regenerate all of its temporary addresses. Similarly, a host that implements MAC address randomization should regenerate all of its temporary addresses. Other events, such as those discussed in <xref target="privacy-reqs"/> should also trigger the regeneration of all temporary addresses.</t>
 
 <t>The IIDs of addresses configured for different autoconfiguration prefixes must 
 be different, such that traffic for those addresses cannot be correlated.</t>
@@ -244,23 +281,54 @@ identity of the node, etc.</t>
 </section>
 
 <section title="Generation of Temporary IPv6 Addresses" anchor="generation">
+<t>The following subsections specify algorithms that may be employed to generate temporary addresses that comply with the requirements specified in <xref target="non-iid-generation"/>.</t>
+
+<section title="RFC 4941" anchor="RFC-4941">
 <t>One possible algorithm for generating temporary IPv6 addresses is that specified 
-in <xref target="RFC4941"/>.
-<list>
+in <xref target="RFC4941"/>.</t>
+
+<t>We note that, since the publication of <xref target="RFC4941"/>, a number of issues have been found in common implementations of such algorithm <xref target="RAID2015"/>.
+
+<list style="hanging">
 <t>
-TODO: if this draft was to obsolete RFC4941, instead of merely replace it, we would need
-to include here the actual specification of the address generation algorithm.
+TODO: It remains an open question what to do with respect to RFC4941. If this draft was to obsolete RFC4941, instead of merely update it, we would need to include here the actual specification of the address generation algorithm.
 </t>
 </list>
 </t>
 
-<t>Another possible approach would be to select a random IID when performing SLAAC. 
-In this case, a node that disconnects from the network and subsequently reconnects 
-would employ a (statistically different) IID for the same prefix. A different 
-(random) IID should be employed for each autoconfiguration prefix. These addresses, 
+</section>
+
+<section title="Randomized IIDs" anchor="randomized-IIDs">
+<t>Another possible approach would be to select a random IID when performing SLAAC. A node employing this algorithm should generate IIDs as follows:
+
+<list style="numbers">
+<t>Obtain a random number (see <xref target="RFC4086"/> for randomness requirements for
+ security)</t>
+
+<t>The Interface Identifier is obtained by taking as many bits from the aforementioned random number (obtained in the previous step) as necessary.
+
+<list style="hanging">
+<t>We note that <xref target="RFC4291"/> requires that the Interface
+  IDs of all unicast addresses (except those that start with the
+  binary value 000) be 64 bits long. However, the method discussed in this document could be employed for generating Interface IDs of any arbitrary length, albeit at the expense of reduced entropy (when employing Interface IDs smaller than 64 bits).</t>
+</list>
+The resulting Interface Identifier SHOULD be compared against the reserved IPv6 Interface Identifiers <xref target="RFC5453"/> <xref target="IANA-RESERVED-IID"/> and against those Interface Identifiers already employed in an address of the same network interface and the same network prefix. In the event that an unacceptable identifier has been generated, this situation SHOULD be handled in the same way as the case of duplicate addresses.
+</t>
+</list>
+</t>
+
+ 
+<t>A node that disconnects from the network and subsequently reconnects would employ a (statistically different) IID for the same prefix. Similarly, a different (random) IID should be employed for each autoconfiguration prefix. In the event of Duplicate Address Detection (DAD) <xref target="RFC4862"/> failures, another random number should be selected to recover from the DAD failure.</t>
+
+<!-- [fgont] I've removed this text, since this is now a formal requirement for temporary addresses
+
+These addresses, 
 as opposed to the temporary addresses specified in RFC4941, would be stable for as 
 long as the node stays attached (without disconnecting) to the network, but would 
-change when a node reconnects.</t>
+change when a node reconnects.
+-->
+
+<!-- [fgont] I've commented out this text since I've included this items in the requirements section. Please let me know whether you think these should be re-added. I think that, irrespective of whether we specifies an algorithm or not, the part of the document that specifies requirements for temporary addresses should tal about "renumbering triggering" events, etc.
 
 <t>
 <list>
@@ -274,6 +342,66 @@ existing addresses.</t>
 </list>
 </t>
 
+-->
+
+</section>
+<section title="Hash-based generation of temporary address generation" anchor="RFC-7217">
+
+<t>The algorithm in <xref target="RFC7217"/> can be augmented for the generation of temporary addresses. The benefit of this would be that a node could employ a single algorithm for generating stable and temporary addresses, by employing appropriate parameters.</t>
+
+<t>Nodes would employ the following algorithm for generating the temporary IID:
+
+<list style="numbers">
+<t>
+Compute a random identifier with the expression:
+<vspace blankLines="1" />
+RID = F(Prefix, MAC_Address, Network_ID, Time, DAD_Counter, secret_key)
+<vspace blankLines="1" />
+Where:
+<list style="hanging">
+<t hangText="RID:">
+<vspace blankLines="0" />Random Identifier</t>
+<t hangText="F():">
+<vspace blankLines="0" />A pseudorandom function (PRF) that MUST NOT be computable from the outside (without knowledge of the secret key). F() MUST also be difficult to reverse, such that it resists attempts to obtain the secret_key, even when given samples of the output of F() and knowledge
+or control of the other input parameters. F() SHOULD produce an output of at least 64 bits. F() could be implemented as a cryptographic hash of the concatenation of each of the function parameters. SHA-1 <xref target="FIPS-SHS"/> and SHA-256 are two possible options for F(). Note: MD5 <xref target="RFC1321"/> is considered unacceptable for F() <xref target="RFC6151"/>.</t>
+<t hangText="Prefix:">
+<vspace blankLines="0" />The prefix to be used for SLAAC, as learned from an ICMPv6 Router Advertisement message, or the link-local IPv6 unicast prefix <xref target="RFC4291"/>.</t>
+<t hangText="MAC_Address:">
+<vspace blankLines="0" />The MAC address corresponding to the underlying network interface card. Employing the MAC address in this expression (in replacement of the Net_Iface parameter of the expression in RFC7217) means that the re-generation of a randomized MAC address will result in a different temporary address.</t>
+<t hangText="Network_ID:">
+<vspace blankLines="0" />Some network-specific data that identifies
+the subnet to which this interface is attached -- for example, the IEEE 802.11 Service Set Identifier (SSID) corresponding to the network to which this interface is associated. Additionally, Simple DNA <xref target="RFC6059"/> describes ideas that could be leveraged to generate a Network_ID parameter. This parameter is SHOULD be employed if some form of "Network_ID" is available.</t>
+<t hangText="Time:">
+<vspace blankLines="0" />An implementation-dependent representation of time. One possible example is the representation in UNIX-like systems <xref target="OPEN-GROUP"/>, that measure time in terms of the number of seconds elapsed since the Epoch (00:00:00 Coordinated Universal Time (UTC), 1 January 1970).</t>
+
+<t hangText="DAD_Counter:">
+<vspace blankLines="0" />A counter that is employed to resolve Duplicate Address Detection (DAD) conflicts.<!-- It MUST be initialized to 0, and incremented by 1 for each new tentative address that is configured as a result of a DAD conflict. Implementations that record DAD_Counter in non-volatile memory for each {Prefix, Net_Iface, Network_ID} tuple MUST initialize DAD_Counter to the recorded value if such an entry exists in non-volatile memory. See <xref target="dad-conflicts"/> for additional details.--></t>
+<t hangText="secret_key:">
+<vspace blankLines="0" />A secret key that is not known by the
+ attacker. The secret key SHOULD be of at least 128 bits. It MUST be initialized to a pseudo-random number
+ (see <xref target="RFC4086"/> for randomness requirements for
+ security) when the operating system is installed or when the IPv6
+ protocol stack is "bootstrapped" for the first time.
+
+
+<!-- An implementation MAY provide the means for the system administrator to display and change the secret key. -->
+</t>
+</list>
+</t>
+
+<t>The Interface Identifier is finally obtained by taking as many bits from the RID value (computed in the previous step) as necessary, starting from the least significant bit.<!--
+<list style="hanging">
+<t>We note that <xref target="RFC4291"/> requires that the Interface
+  IDs of all unicast addresses (except those that start with the
+  binary value 000) be 64 bits long. However, the method discussed in this document could be employed for generating Interface IDs of any arbitrary length, albeit at the expense of reduced entropy (when employing Interface IDs smaller than 64 bits).</t>
+</list>-->
+The resulting Interface Identifier SHOULD be compared against the reserved IPv6 Interface Identifiers <xref target="RFC5453"/> <xref target="IANA-RESERVED-IID"/> and against those Interface Identifiers already employed in an address of the same network interface and the same network prefix. In the event that an unacceptable identifier has been generated, this situation SHOULD be handled in the same way as the case of duplicate addresses.
+</t>
+</list>
+</t>
+
+</section>
+
 </section>
 
 <section title="Update to existing RFCs" anchor="updated-rfcs">
@@ -282,7 +410,7 @@ are updated.</t>
 
 <section title="Update to RFC4941">
 <t>The temporary addresses specified in <xref target="RFC4941"/> MAY be used in 
-replacement of the stable addresses <xref target="I-D.ietf-6man-default-iids"/>. 
+replacement of the stable addresses <xref target="RFC8064"/>. 
 That is, a node MAY configure temporary addresses only, without configuring any 
 stable addresses.
 </t>
@@ -292,7 +420,7 @@ stable addresses.
 
 	<section title="Future Work" anchor="future-work">
 <t>This document clarifies the requirements for stability requirements for IPv6 
-addresses. A subsequent document will discuss the tradeoffs involved when considering 
+addresses, and specifies requirements for temporary addresses. A separate document (<xref target="I-D.gont-6man-address-usage-recommendations"/>) discusses the tradeoffs involved when considering 
 different stability properties of IPv6 addresses, and and the different configuration 
 setups such as: stable addresses only, temporary addresses only, or mixed stable and 
 temporary addresses.
@@ -313,6 +441,8 @@ requirements for the generation of temporary addresses. Additionally, it formall
 <xref target="RFC4941"/> such that stable addresses are not required to be configured 
 along with the temporary addresses.
 </t>
+<t>The security and privacy properties of IPv6 addresses have been discussed in detail in <xref target="RFC7721"/> and <xref target="RFC7707"/>.</t>
+
     </section>
 
 
@@ -333,13 +463,23 @@ Lorenzo Colitti for providing valuable feedback on earlier versions of this docu
 	<?rfc include="reference.RFC.4291" ?>
 -->
 	<?rfc include="reference.RFC.4862" ?>
+	<?rfc include="reference.RFC.4291" ?>
 	<?rfc include="reference.RFC.4941" ?>
-	<?rfc include="reference.I-D.ietf-6man-default-iids" ?>
+	<?rfc include="reference.RFC.7217" ?>
+	<?rfc include="reference.RFC.8064" ?>
+
+<!-- Added as a result of algorithm specification -->
+	<?rfc include="reference.RFC.4086" ?>
+	<?rfc include="reference.RFC.5453" ?>
+	<?rfc include="reference.RFC.7136" ?>
+
   </references>
 
   <references title='Informative References'>
 
 	<?rfc include="reference.I-D.gont-predictable-numeric-ids" ?>
+	<?rfc include="reference.I-D.gont-6man-address-usage-recommendations" ?>
+
 	<?rfc include="reference.RFC.6973" ?>
         <?rfc include="reference.RFC.7258" ?>
         <?rfc include="reference.RFC.7624" ?>
@@ -365,6 +505,67 @@ Lorenzo Colitti for providing valuable feedback on earlier versions of this docu
 <date year="2014" month="November"/>
 </front>
 </reference>
+
+      <reference anchor="RAID2015" target="https://www.sba-research.org/wp-content/uploads/publications/Ullrich2015Privacy.pdf">
+        <front>
+          <title>Privacy is Not an Option: Attacking the IPv6 Privacy Extension</title>
+
+          <author fullname="Johanna Ullrich" initials="J." surname="Ullrich">
+          </author>
+
+          <author fullname="Edgar R. Weippl" initials="E.R." surname="Weippl">
+          </author>
+          <date/>
+        </front>
+
+        <seriesInfo name=""
+                    value="International Symposium on Recent Advances in Intrusion Detection (RAID), 2015"/>
+      </reference>
+	<?rfc include="reference.RFC.7707" ?>
+
+
+<!-- Added as a result of algorithm specification -->
+	<?rfc include="reference.RFC.6059" ?>
+
+	<reference anchor="IANA-RESERVED-IID" target="http://www.iana.org/assignments/ipv6-interface-ids">
+		<front>
+			<title>Reserved IPv6 Interface Identifiers</title>
+			<author>
+				<organization>IANA</organization>
+			</author>
+			<date/>
+		</front>
+	</reference>
+
+	<?rfc include="reference.RFC.1321" ?>
+	<?rfc include="reference.RFC.6151" ?>
+
+	<reference anchor="FIPS-SHS" target="http://csrc.nist.gov/publications/fips/fips180-4/fips-180-4.pdf">
+		<front>
+			<title>Secure Hash Standard (SHS)</title>
+
+    <author>
+		<organization>NIST</organization>
+    </author>  
+
+			<date month="March" year="2012"/>
+		</front>
+		<seriesInfo name="FIPS Publication" value="180-4"/>
+	</reference>
+
+	<reference anchor="OPEN-GROUP" target="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/contents.html">
+		<front>
+			<title>The Open Group Base Specifications Issue 7 / IEEE Std 1003.1-2008, 2016 Edition</title>
+
+    <author>
+		<organization>The Open Group</organization>
+    </author>  
+
+			<date year="2016"/>
+		</front>
+		<seriesInfo name="Section 4.16" value="Seconds Since the Epoch"/>
+	</reference>
+
 
 </references>
   </back>
