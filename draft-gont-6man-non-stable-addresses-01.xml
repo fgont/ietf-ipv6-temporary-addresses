@@ -146,6 +146,7 @@ and mitigations has evolved. We are now concerned with Pervasive Monitoring
 advertising and other purposes, for example through the Real Time Bidding protocol used for 
 advertising auctions <xref target="RTB25" />.
 </t>
+<section title="Privacy requirements" >
 <t>
 The widespread deployment of encryption advocated in <xref target="RFC7624" /> is a 
 response to Pervasive Monitoring. Encryption of communication reduces the amount of
@@ -240,10 +241,18 @@ reduce the search space when performing address-scanning attacks, infer the
 identity of the node, etc.</t>
 </section>
 
+</section>
 
 <section title="Generation of Temporary IPv6 Addresses" anchor="generation">
 <t>One possible algorithm for generating temporary IPv6 addresses is that specified 
-in <xref target="RFC4941"/>.</t>
+in <xref target="RFC4941"/>.
+<list>
+<t>
+TODO: if this draft was to obsolete RFC4941, instead of merely replace it, we would need
+to include here the actual specification of the address generation algorithm.
+</t>
+</list>
+</t>
 
 <t>Another possible approach would be to select a random IID when performing SLAAC. 
 In this case, a node that disconnects from the network and subsequently reconnects 
@@ -252,6 +261,19 @@ would employ a (statistically different) IID for the same prefix. A different
 as opposed to the temporary addresses specified in RFC4941, would be stable for as 
 long as the node stays attached (without disconnecting) to the network, but would 
 change when a node reconnects.</t>
+
+<t>
+<list>
+<t>TODO: in addition to a generation algorithm, we need to also specify that addresses
+can have a variable lifetime, instead of just using the "periodic update" specified 
+in <xref target="RFC4941" />.</t>
+<t>TODO: need a discussion of "renumbering trigger", such as what to do when the 
+browser requires to "delete history". Such events mark the start of a "privacy epoch",
+and should trigger creation of new temporary addresses and deprecation of the 
+existing addresses.</t>
+</list>
+</t>
+
 </section>
 
 <section title="Update to existing RFCs" anchor="updated-rfcs">
